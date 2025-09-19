@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receipt #{{ payment.id }}</title>
+  <style>
+    /* Base Styles */
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 20px 0;
+      color: #333;
+    }
+
+    /* Wrapper */
+    .receipt-wrapper {
+      width: 90%;
+      max-width: 700px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 40px 30px;
+      border-radius: 12px;
+      box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #dc3545;
+      font-size: 26px;
+    }
+
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 15px;
+      color: #666;
+    }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 25px;
+      table-layout: fixed;
+      border: 1px solid #ddd;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border: 1px solid #ddd;
+      word-wrap: break-word;
+    }
+
+    th {
+      background-color: #dc3545;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f9f9f9;
+    }
+
+    td.status {
+      text-align: left;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      padding: 5px 12px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #fff;
+      min-width: 80px;
+      text-align: center;
+    }
+
+    .badge-success { background-color: #28a745; }
+    .badge-pending { background-color: #ffc107; color: #333; }
+    .badge-failed { background-color: #dc3545; }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      margin-top: 40px;
+      line-height: 1.5;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .receipt-wrapper {
+        padding: 30px 20px;
+      }
+
+      th, td {
+        padding: 10px 12px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-wrapper">
+    <div class="header">
+      <h1>Alpha Run Club</h1>
+      <p>Payment Receipt</p>
+    </div>
+
+    <table>
+      <tr>
+        <th>Receipt ID</th>
+        <td>#{{ payment.id }}</td>
+      </tr>
+      <tr>
+        <th>Event Name</th>
+        <td>{{ payment.event.title }}</td>
+      </tr>
+      <tr>
+        <th>Event Type</th>
+        <td>{{ payment.event.event_type|title }}</td>
+      </tr>
+      <tr>
+        <th>Event Date</th>
+        <td>{{ payment.event.date|date:"d M Y" }}</td>
+      </tr>
+      <tr>
+        <th>Quantity</th>
+        <td>{{ payment.quantity }}</td>
+      </tr>
+      <tr>
+        <th>Amount per Ticket</th>
+        <td>₹{{ payment.amount|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <th>Total Amount</th>
+        <td>₹{{ payment.total_amount|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td class="status">
+          {% if payment.status == "SUCCESS" %}
+            <span class="badge badge-success">Success</span>
+          {% elif payment.status == "PENDING" %}
+            <span class="badge badge-pending">Pending</span>
+          {% else %}
+            <span class="badge badge-failed">Failed</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th>Payment Date</th>
+        <td>{{ payment.created_at|date:"d M Y, H:i" }}</td>
+      </tr>
+    </table>
+
+    <div class="footer">
+      Thank you for registering with Alpha Run Club!<br>
+      This is a system-generated receipt and does not require a signature.
+    </div>
+  </div>
+</body>
+</html>
+

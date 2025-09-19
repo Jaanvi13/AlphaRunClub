@@ -1,0 +1,178 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block title %}Users | Alpha Admin{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">Users</h2>
+    <div>
+      <!-- <button class="btn btn-outline-secondary me-2"><i class="bi bi-upload"></i> Export</button> -->
+      <!-- Add User Button triggers modal -->
+      <button type="button" class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#addUserModal">
+        <i class="bi bi-plus-lg"></i> Add User
+      </button>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <form method="GET" class="row g-2 mb-4">
+    <div class="col-md-3">
+      <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request.GET.search }}">
+    </div>
+    <div class="col-md-2">
+      <select name="role" class="form-select">
+        <option value="All" {% if request.GET.role == "All" %}selected{% endif %}>Role</option>
+        <option value="Admin" {% if request.GET.role == "Admin" %}selected{% endif %}>Admin</option>
+        <option value="Staff" {% if request.GET.role == "Staff" %}selected{% endif %}>Staff</option>
+        <option value="User" {% if request.GET.role == "User" %}selected{% endif %}>User</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <select name="status" class="form-select">
+        <option value="All" {% if request.GET.status == "All" %}selected{% endif %}>Status</option>
+        <option value="Active" {% if request.GET.status == "Active" %}selected{% endif %}>Active</option>
+        <option value="Inactive" {% if request.GET.status == "Inactive" %}selected{% endif %}>Inactive</option>
+        <option value="Suspended" {% if request.GET.status == "Suspended" %}selected{% endif %}>Suspended</option>
+        <option value="Banned" {% if request.GET.status == "Banned" %}selected{% endif %}>Banned</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <input type="date" name="joined_date" class="form-control" value="{{ request.GET.joined_date }}">
+    </div>
+    <div class="col-md-1">
+      <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+  </form>
+
+  <!-- User Table -->
+  <div class="table-responsive shadow-sm">
+    <table class="table table-hover align-middle w-100 mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th><input type="checkbox"></th>
+          <th>Id</th>        
+          <th>Username</th>
+          <th>Email</th>
+          <th>Status</th>
+          <th>Role</th>
+          <th>Joined Date</th>
+          <th class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        <tr>
+          <td><input type="checkbox"></td>
+          <td>{{ user.id }}</td>
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>
+            <span class="badge 
+              {% if user.is_active %}bg-success{% else %}bg-secondary{% endif %}">
+              {% if user.is_active %}Active{% else %}Inactive{% endif %}
+            </span>
+          </td>
+          <td>
+            {% if user.is_superuser %}Admin{% elif user.is_staff %}Staff{% else %}User{% endif %}
+          </td>
+          <td>{{ user.date_joined }}</td>
+          <td class="text-center">
+            <!-- Edit -->
+            <a href="/admin/useredit/{{ user.id }}/" class="text-primary me-2">
+              <i class="bi bi-pencil-square"></i>
+            </a>
+            <!-- Delete modal trigger -->
+            <button type="button" class="btn btn-link text-danger p-0" data-bs-toggle="modal" data-bs-target="#deleteModal{{ user.id }}">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </td>
+        </tr>
+
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal{{ user.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ user.id }}" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel{{ user.id }}">Delete User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                Are you sure you want to delete <strong>{{ user.username }}</strong> ({{ user.email }})?
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="/admin/userdelete/{{ user.id }}/">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">Yes, Delete</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Add User Modal -->
+  <div class="modal fade" id="addUserModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form method="POST" action="/admin/useradd/">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="addUserModalLabel">Add User</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label>First Name</label>
+              <input type="text" name="first_name" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Last Name</label>
+              <input type="text" name="last_name" class="form-control">
+            </div>
+            <div class="mb-3">
+              <label>Username</label>
+              <input type="text" name="username" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Email</label>
+              <input type="email" name="email" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Password</label>
+              <input type="password" name="password" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label>Role</label>
+              <select name="role" class="form-select">
+                <option value="Admin">Admin</option>
+                <option value="Staff">Staff</option>
+                <option value="User" selected>User</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label>Status</label>
+              <select name="status" class="form-select">
+                <option value="Active" selected>Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Add User</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

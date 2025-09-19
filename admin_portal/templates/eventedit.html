@@ -1,0 +1,68 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block title %}Edit Event | Alpha Admin{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="card shadow rounded mx-auto" style="max-width: 700px; padding: 30px;">
+        <h1 class="text-2xl font-bold mb-6 text-center">Edit Event</h1>
+
+        <!-- Edit Form -->
+        <form method="POST" action="{% url 'edit_event' event.id %}" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="text-sm text-gray-500">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.name == "gallery_link" %}
+                <small class="text-sm text-gray-500">Paste a Google Photos / Drive / Album link.</small>
+                {% endif %}
+                {% if field.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="mt-6 d-flex justify-content-between">
+                <button type="submit" 
+                        style="background-color:#1d3557; color:white; font-weight:bold; padding:10px 25px; border-radius:5px; border:none; cursor:pointer;">
+                    Save Changes
+                </button>
+
+                <!-- Trigger Delete Modal -->
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                    Delete Event
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteModalLabel">Delete Event</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to delete <strong>{{ event.title }}</strong> ({{ event.date }})?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="POST" action="{% url 'delete_event' event.id %}">
+          {% csrf_token %}
+          <button type="submit" class="btn btn-danger">Yes, Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'main' %}
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Go Back Button -->
+    <div class="mb-4">
+      <a href="/plans" class="btn btn-outline-secondary">
+        ← Back to Plans
+      </a>
+    </div>
+
+    <div class="text-center">
+      <h2 class="fw-bold mb-4">Confirm Your Plan</h2>
+      <p class="text-muted mb-5">Review your selected plan before making payment</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <!-- Plan Card -->
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5 text-center">
+            <h4 class="fw-bold text-uppercase text-danger">{{ plan_type }}</h4>
+            <p class="text-muted">Alpha Performance Division {{ plan_type|title }} Plan</p>
+            <h3 class="fw-bold text-dark">₹{{ amount }}</h3>
+            <hr class="my-4">
+
+            <!-- Example features -->
+            <ul class="list-unstyled mb-4">
+              {% if plan_type == "monthly" %}
+                <li>✔ Group Training Access</li>
+                <li>✔ Strength & Conditioning</li>
+                <li>✔ Endurance Sessions</li>
+              {% elif plan_type == "quarterly" %}
+                <li>✔ All Basic Features</li>
+                <li>✔ Personalised Training Plan</li>
+                <li>✔ Progress Tracking</li>
+              {% elif plan_type == "half-yearly" %}
+                <li>✔ All Pro Features</li>
+                <li>✔ 1-on-1 Coaching</li>
+                <li>✔ Priority Support</li>
+              {% endif %}
+            </ul>
+
+            <!-- Payment Button -->
+            <button id="rzp-button" class="btn btn-danger btn-lg px-5 py-3 rounded-3">
+              Proceed to Pay
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Razorpay Integration -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    var options = {
+        "key": "rzp_test_RDfG0Blcon2Nrc",
+        "amount": "{{ amount|add:'0' }}00",
+        "currency": "INR",
+        "name": "Alpha Run Club",
+        "description": "Payment for {{ plan_type|title }} Plan",
+        "order_id": "{{ order_id }}",
+        "theme": { "color": "#dc3545" },
+        "handler": function(response) {
+            // Send Razorpay response to backend to save PlanPayment
+            fetch("{% url 'save_plan_payment' %}", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "X-CSRFToken": "{{ csrf_token }}"
+                },
+                body: JSON.stringify({
+                    plan_type: "{{ plan_type }}",
+                    amount: "{{ amount }}",
+                    razorpay_order_id: response.razorpay_order_id,
+                    payment_id: response.razorpay_payment_id
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if(data.success) {
+                    window.location.href = "/success";
+                } else {
+                    alert("Payment saved failed. Please contact support.");
+                }
+            })
+            .catch(err => {
+                alert("Error saving payment. Please contact support.");
+                console.error(err);
+            });
+        }
+    };
+
+    var rzp = new Razorpay(options);
+    document.getElementById("rzp-button").onclick = function(e) {
+        rzp.open();
+        e.preventDefault();
+    };
+});
+</script>
+
+{% endblock 'main' %}
+

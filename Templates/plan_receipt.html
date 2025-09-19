@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Plan Receipt #{{ payment.id }}</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      color: #333;
+      margin: 0;
+      padding: 0;
+      background-color: #ffffff;
+    }
+
+    .receipt-wrapper {
+      max-width: 700px;
+      width: 90%;
+      margin: 30px auto;
+      background-color: #ffffff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .header h1 {
+      margin: 0;
+      color: #dc3545;
+      font-size: 24px;
+    }
+
+    .header p {
+      margin: 5px 0 0 0;
+      font-size: 14px;
+      color: #666;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+    }
+
+    th {
+      background-color: #dc3545;
+      color: #fff;
+      text-align: left;
+      font-weight: bold;
+    }
+
+    td {
+      background-color: #f9f9f9;
+    }
+
+    td.status {
+      text-align: center;
+    }
+
+    .badge {
+      padding: 5px 10px;
+      border-radius: 5px;
+      font-weight: bold;
+      color: #fff;
+      display: inline-block;
+    }
+
+    .badge-success { background-color: #28a745; }
+    .badge-pending { background-color: #ffc107; color: #333; }
+    .badge-failed { background-color: #dc3545; }
+
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #777;
+      margin-top: 40px;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+  <div class="receipt-wrapper">
+    <div class="header">
+      <h1>Alpha Run Club</h1>
+      <p>Plan Payment Receipt</p>
+    </div>
+
+    <table>
+      <tr>
+        <th>Receipt ID</th>
+        <td>#{{ payment.id }}</td>
+      </tr>
+      <tr>
+        <th>Plan Type</th>
+        <td>{{ payment.plan_type|title }}</td>
+      </tr>
+      <tr>
+        <th>Amount Paid</th>
+        <td>₹{{ payment.amount|floatformat:2 }}</td>
+      </tr>
+      <tr>
+        <th>Status</th>
+        <td class="status">
+          {% if payment.status == "SUCCESS" %}
+            <span class="badge badge-success">Success</span>
+          {% elif payment.status == "PENDING" %}
+            <span class="badge badge-pending">Pending</span>
+          {% else %}
+            <span class="badge badge-failed">Failed</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th>Payment Date</th>
+        <td>{{ payment.created_at|date:"d M Y, H:i" }}</td>
+      </tr>
+    </table>
+
+    <div class="footer">
+      Thank you for subscribing to Alpha Run Club!<br>
+      This is a system-generated receipt and does not require a signature.
+    </div>
+  </div>
+</body>
+</html>

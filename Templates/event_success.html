@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block 'main' %}
+<section class="d-flex align-items-center justify-content-center text-center" 
+         style="min-height: 80vh; background: url('/media/image/event_bg.jpg') center/cover no-repeat; color: white;">
+  <div class="container">
+    <div class="bg-dark bg-opacity-75 p-5 rounded-4 shadow-lg">
+      <h1 class="fw-bold text-success">🎉 Registration Successful!</h1>
+      <p class="lead mt-3">
+        Thank you for registering! <br>
+        We’ll see you this Sunday at <span class="fw-bold text-danger">7:00 AM</span>.
+      </p>
+
+      <hr class="border-light my-4">
+
+      <div class="d-flex justify-content-center gap-3 mt-4 flex-wrap">
+        <a href="/home" class="btn btn-danger btn-lg px-4">🏠 Go Back Home</a>
+        <a href="/billing-history" class="btn btn-outline-light btn-lg px-4">📄 Check Billing History</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock 'main' %}
+
+

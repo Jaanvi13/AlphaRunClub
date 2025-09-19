@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Alpha Run Tracker</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    header {
+      width: 100%;
+      text-align: center;
+      font-size: 2rem;
+      font-weight: bold;
+      background-color: #000;
+      color: #fff;
+      padding: 20px 0;
+      position: relative;
+      z-index: 2;
+    }
+
+    .home-btn {
+      display: inline-block;
+      margin-left: 20px; /* add space from left edge */
+      margin-top: 10px;
+      background-color: #dc3545;
+      color: #fff;
+      padding: 10px 15px;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+      transition: background 0.2s;
+    }
+    .home-btn:hover {
+      background-color: #c82333;
+      text-decoration: none;
+    }
+
+    .tracker-container {
+      display: flex;
+      justify-content: center;
+      margin-top: 80px; /* space below header */
+    }
+
+    .tracker-card {
+      background: #fff;
+      padding: 40px 50px;
+      border-radius: 20px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+      width: 350px;
+      text-align: center;
+    }
+
+    .tracker-stats {
+      font-size: 1.4rem;
+      margin: 15px 0;
+      font-weight: 500;
+    }
+
+    .tracker-btn {
+      padding: 10px 25px;
+      margin: 10px 10px;
+      border: none;
+      border-radius: 10px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .start-btn {
+      background-color: #28a745;
+      color: #fff;
+    }
+    .start-btn:hover { transform: scale(1.05); }
+    .stop-btn {
+      background-color: #dc3545;
+      color: #fff;
+    }
+    .stop-btn:hover { transform: scale(1.05); }
+
+    footer {
+      width: 100%;
+      text-align: center;
+      padding: 15px 0;
+      background-color: #111;
+      color: #fff;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+    }
+  </style>
+</head>
+<body>
+
+<header>🏃‍♂️ Alpha Live Run Tracker</header>
+<a href="/home" class="home-btn">← Back to Home</a>
+
+<div class="tracker-container">
+  <div class="tracker-card">
+    <p class="tracker-stats" id="time">Time: 0:00</p>
+    <p class="tracker-stats" id="distance">Distance: 0.00 km</p>
+    <p class="tracker-stats" id="speed">Average Speed: 0.0 km/h</p>
+
+    <div>
+      <button class="tracker-btn start-btn" onclick="startRun()">Start</button>
+      <button class="tracker-btn stop-btn" onclick="stopRun()">Stop</button>
+    </div>
+  </div>
+</div>
+
+<footer>© 2025 Alpha Run Club</footer>
+
+<script>
+  let startTime;
+  let timerInterval;
+  let distance = 0; // km
+  let speed = 0; // km/h
+
+  function formatTime(ms) {
+    const totalSec = Math.floor(ms / 1000);
+    const minutes = Math.floor(totalSec / 60);
+    const seconds = totalSec % 60;
+    return `${minutes}:${seconds.toString().padStart(2,'0')}`;
+  }
+
+  function startRun() {
+    startTime = new Date();
+    distance = 0;
+    speed = 0;
+
+    timerInterval = setInterval(() => {
+      const elapsed = new Date() - startTime;
+      document.getElementById("time").innerText = `Time: ${formatTime(elapsed)}`;
+      distance += 0.005; // simulate distance increase (5 meters/sec)
+      speed = distance / (elapsed / 3600000); // km/h
+      document.getElementById("distance").innerText = `Distance: ${distance.toFixed(2)} km`;
+      document.getElementById("speed").innerText = `Average Speed: ${speed.toFixed(1)} km/h`;
+    }, 1000);
+  }
+
+  function stopRun() {
+    clearInterval(timerInterval);
+    alert(`Run Ended!\nDistance: ${distance.toFixed(2)} km\nAverage Speed: ${speed.toFixed(1)} km/h`);
+  }
+</script>
+</body>
+</html>

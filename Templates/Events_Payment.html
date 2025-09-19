@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'main' %}
+
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Go Back Button -->
+    <div class="mb-4">
+      <a href="/events/{{ event.id }}/" class="btn btn-outline-danger">
+        ← Back to Event
+      </a>
+    </div>
+
+    <div class="text-center">
+      <h2 class="fw-bold mb-4">Confirm Your Registration</h2>
+      <p class="text-muted mb-5">Review event details before making payment</p>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="col-md-6">
+        <!-- Event Card -->
+        <div class="card shadow-lg border-0 rounded-4">
+          <div class="card-body p-5 text-center">
+
+            <!-- Event Title -->
+            <h4 class="fw-bold text-uppercase text-danger">{{ event.name }}</h4>
+            <p class="text-muted">Alpha Run Club Official Event</p>
+
+            <!-- Quantity -->
+            <div class="text-center mb-4">
+              <label for="quantity" class="form-label fw-bold">Number of Tickets</label>
+              <input type="number" id="quantity" name="quantity" min="1" value="1"
+                     class="form-control mx-auto text-center" style="max-width: 200px;">
+            </div>
+
+            <!-- Total Price -->
+            <h3 class="fw-bold text-dark" id="total-price">₹{{ event.price|floatformat:2 }}</h3>
+            <hr class="my-4">
+
+            <!-- Event Perks -->
+            <ul class="list-unstyled mb-4">
+              <li>✔ Guaranteed Entry</li>
+              <li>✔ Networking Opportunities</li>
+              <li>✔ After Party Access</li>
+            </ul>
+
+            <!-- Payment Button -->
+            <button id="rzp-button" class="btn btn-danger btn-lg px-5 py-3 rounded-3">
+              Register & Pay
+            </button>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Razorpay Checkout -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+  // CSRF token for fetch
+  const csrfToken = '{{ csrf_token }}';
+
+  // Update total price dynamically
+  const quantityInput = document.getElementById('quantity');
+  const totalPriceEl = document.getElementById('total-price');
+  const pricePerTicket = {{ event.price }};
+
+  quantityInput.addEventListener('input', function() {
+    const qty = parseInt(this.value) || 1;
+    totalPriceEl.textContent = '₹' + (pricePerTicket * qty).toFixed(2);
+  });
+
+  // Razorpay button click handler
+  document.addEventListener("DOMContentLoaded", function() {
+    const rzpButton = document.getElementById("rzp-button");
+
+    rzpButton.addEventListener("click", function(e) {
+      e.preventDefault();
+
+      const quantity = parseInt(quantityInput.value) || 1;
+      const totalAmount = pricePerTicket * quantity * 100; // in paise
+
+      const options = {
+        "key": "{{ razorpay_key }}",
+        "amount": totalAmount,
+        "currency": "INR",
+        "name": "Alpha Run Club",
+        "description": "Registration for {{ event.name }}",
+        "modal": {
+          "escape": true,
+          "ondismiss": function() {
+            alert("Payment cancelled.");
+          }
+        },
+        "handler": function(response) {
+          // Send data to backend using fetch
+          fetch("/payment/{{ event.id }}/", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "X-CSRFToken": csrfToken
+            },
+            body: JSON.stringify({
+              quantity: quantity,
+              razorpay_payment_id: response.razorpay_payment_id
+            })
+          })
+          .then(res => res.json())
+          .then(data => {
+            // Redirect to success page in the same tab
+            window.location.href = `/event-success`;
+          })
+          .catch(err => {
+            alert("Payment succeeded but something went wrong. Please contact support.");
+            console.error(err);
+          });
+        },
+        "theme": {"color": "#dc3545"}
+      };
+
+      const rzp = new Razorpay(options);
+      rzp.open();
+    });
+  });
+</script>
+
+{% endblock 'main' %}
+
+

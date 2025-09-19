@@ -1,0 +1,45 @@
+{% extends 'adminbase.html' %}
+{% load static %}
+{% block title %}Events | Alpha Admin{% endblock %}
+
+{% block content %}
+
+<div class="container my-5">
+    <div class="card shadow rounded mx-auto" style="max-width: 700px; padding: 30px;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="text-2xl font-bold mb-0">Create New Event</h1>
+            <a href="/admin/eventlist/" 
+               class="btn"
+               style="background-color:#e63946; color:white; font-weight:600; padding:8px 18px; border-radius:8px; border:none;">
+                See Event List
+            </a>
+        </div>
+
+        <form method="POST" action="create_event/" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% for field in form %}
+            <div class="mb-4">
+                <label class="block font-semibold mb-1">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="text-sm text-gray-500">{{ field.help_text }}</small>
+                {% endif %}
+                {% if field.errors %}
+                <p class="text-red-600 text-sm mt-1">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div class="mt-6 text-center">
+                <button type="submit" 
+                        style="background-color:#e63946; color:white; font-weight:bold; padding:10px 25px; border-radius:8px; border:none; cursor:pointer;">
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
+

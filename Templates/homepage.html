@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'main' %}
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="container text-white">
+      <div class="row">
+        <div class="col-md-6">
+          <h1 class="display-4 fw-bold">Run for Change. <br />Run with Us.</h1>
+          <p class="lead">Join our vibrant community of runners supporting fitness, friendship & social causes.</p>
+          <a class="section-pop btn btn-danger btn-lg" href="/register">Join the Club</a>
+          <a class="section-pop btn btn-outline-light btn-lg" href="#upcoming">Upcoming Events</a>
+        </div>
+      </div>
+    </div>
+  </section> <br>
+
+<!-- Why Join -->
+<section class="py-5 text-center">
+  <div class="container">
+    <h2 class="mb-4"><b>Why Join?</b></h2>
+
+    <div class="slider-wrapper">
+      <!-- Left button -->
+      <button class="nav-btn left-btn">❮</button>
+
+      <!-- Slider -->
+      <div class="slider" id="whySlider">
+        <div class="why-box section-pop">
+          ❤️
+          <h5>Community & Fitness</h5>
+          <p>Meet like-minded people</p>
+        </div>
+        <div class="why-box section-pop">
+          🌍
+          <h5>Run for Social Causes</h5>
+          <p>Support NGOs every mile</p>
+        </div>
+        <div class="why-box section-pop">
+          🏅
+          <h5>Events & Challenges</h5>
+          <p>Monthly events, rewards & badges</p>
+        </div>
+        <div class="why-box section-pop">
+          🔥
+          <h5>Boost Your Stamina</h5>
+          <p>Improve endurance with regular runs</p>
+        </div>
+        <div class="why-box section-pop">
+          🤝
+          <h5>Networking & Fun</h5>
+          <p>Make friends while staying fit</p>
+        </div>
+      </div>
+
+      <!-- Right button -->
+      <button class="nav-btn right-btn">❯</button>
+    </div>
+
+    <!-- Indicators -->
+    <div class="indicators" id="indicators"></div>
+  </div>
+</section> <br>
+
+
+<!-- Upcoming Events -->
+<section class="bg-white text-center mb-5">
+  <div class="container">
+    <h2 id="upcoming" class="sec mb-4"><b>Upcoming Events</b></h2> <br>
+    <div class="row g-4">
+      
+      {% if upcoming_events %}
+        {% for event in upcoming_events %}
+        <div class="section-pop col-md-4">
+          <div class="card h-100">
+            <div>
+              {% if event.cover_image %}
+                <img src="{{ event.cover_image.url }}" class="card-img-top"
+                     alt="{{ event.title }}"
+                     style="width:100%; max-height:350px; object-fit:contain;">
+              {% else %}
+                <img src="{% static 'default_event.jpg' %}" class="card-img-top"
+                     alt="{{ event.title }}"
+                     style="width:100%; max-height:350px; object-fit:contain;">
+              {% endif %}
+            </div>
+            <div class="card-body">
+              <h5 class="card-title">{{ event.title }}</h5>
+              <p class="card-text">
+                {{ event.date }} • {{ event.location }}
+              </p>
+              {% if event.registration_link %}
+                <a href="/events/{{ event.id }}/pay/" target="_blank" class="btn btn-danger">
+                  {{ event.cta_text|default:"Register" }}
+                </a>
+              {% else %}
+                <button class="btn btn-secondary" disabled>Coming Soon</button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      {% else %}
+        <h3>No upcoming events right now. Stay tuned!</h3>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+  <!-- Stats Section -->
+  <section class="py-5 text-center cta">
+    <div class="container">
+      <h3>Alpha Run Club is just getting STARTED!</h3>
+      <div class="row mt-4">
+        <div class="col-md-4">🏃‍♂️ <h5>10K+ Members</h5></div>
+        <div class="col-md-4">❤️ <h5>25+ Social Causes</h5></div>
+        <div class="col-md-4">🌟 <h5>40+ Events</h5></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Footer -->
+  <section class="py-5 text-center bg-dark text-white">
+    <div class="container">
+      <h2 class="mb-4">Ready to Run with Purpose?</h2>
+      <a href="/register" class="btn btn-danger btn-lg">Become a Member</a>
+    </div>
+  </section>
+
+{% endblock 'main' %}

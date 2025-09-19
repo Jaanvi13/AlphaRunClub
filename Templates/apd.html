@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block 'main' %}
+
+<!-- Hero Section -->
+<section class="hero d-flex align-items-center text-center text-white" 
+         style="background: url('/media/image/APD.png') center center/cover no-repeat; height: 85vh;">
+  <div class="container">
+    <h1 class="display-4 fw-bold">Alpha Performance Division</h1>
+    <p class="lead">Elevating athletes with structured training, strength & endurance coaching</p>
+    <a href="#services" class="btn btn-danger btn-lg mt-3">Explore Services</a>
+  </div>
+</section>  <br>
+
+<!-- About Section -->
+<section class="pt-5">
+  <div class="container">
+    <h1 class="text-center mb-4 fw-bold">What is Alpha Performance Division?</h1>
+    <p class="text-center mx-auto" style="max-width: 900px;">
+      The Alpha Performance Division is a specialized arm of Alpha Run Club dedicated 
+      to serious athletes and fitness enthusiasts. We focus on performance-driven training, 
+      tailored programming and structured coaching that helps members reach their peak potential.
+    </p>
+  </div>
+</section> <br> 
+
+<!-- Services Section -->
+<section class="py-5 bg-white" id="services">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Our Services</h2>
+    <div class="row g-4 justify-content-center">
+      <div class="col-md-6 col-lg-3">
+        <div class="card section-pop h-100 text-center p-4">
+          <i class="bi bi-bar-chart-fill text-danger mb-3" style="font-size: 2rem;"></i>
+          <h5 class="fw-bold">Strength & Conditioning</h5>
+          <p>Progressive training to build strength, power, and functional performance.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card section-pop h-100 text-center p-4">
+          <i class="bi bi-heart-pulse text-danger mb-3" style="font-size: 2rem;"></i>
+          <h5 class="fw-bold">Endurance Training</h5>
+          <p>Custom programs to improve cardiovascular capacity and stamina.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card section-pop h-100 text-center p-4">
+          <i class="bi bi-people-fill text-danger mb-3" style="font-size: 2rem;"></i>
+          <h5 class="fw-bold">Group Training</h5>
+          <p>Train with a motivated community in structured group sessions designed for all levels.</p>
+        </div>
+      </div>
+      <div class="col-md-6 col-lg-3">
+        <div class="card section-pop h-100 text-center p-4">
+          <i class="bi bi-person-check-fill text-danger mb-3" style="font-size: 2rem;"></i>
+          <h5 class="fw-bold">Personalised Training</h5>
+          <p>One-on-one customized programs tailored to your goals, schedule, and performance needs.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Pricing Plan Button -->
+    <div class="text-center mt-5">
+      <a href="/plans" class="btn btn-danger btn-lg px-5 py-3">
+        Choose Your Plan
+      </a>
+    </div>
+  </div>
+</section> 
+
+<!-- Meet the Coaches Section -->
+<section class="py-5 bg-white">
+  <div class="container">
+    <h2 class="text-center mb-5 fw-bold">Meet the Coaches</h2>
+    
+    <div class="row justify-content-center g-4">
+      
+      <!-- Coach 1 -->
+      <div class="col-md-6 col-lg-5">
+        <div class="card h-100 shadow-sm border-0">
+          <img src="/media/image/Jaanvi.JPG" 
+               class="img-fluid rounded-3 coach-img" 
+               alt="Coach A">
+          <div class="card-body text-center">
+            <h5 class="fw-bold mt-2">Jaanvi Thadani</h5>
+            <p class="text-muted">Strength & Conditioning Specialist</p>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Coach 2 -->
+      <div class="col-md-6 col-lg-5">
+        <div class="card h-100 shadow-sm border-0">
+          <img src="/media/image/Raveen.jpeg" 
+               class="img-fluid rounded-3 coach-img" 
+               alt="Coach B">
+          <div class="card-body text-center">
+            <h5 class="fw-bold mt-2">Raveen Kumar</h5>
+            <p class="text-muted">Endurance & Running Expert</p>
+          </div>
+        </div>
+      </div>
+
+    </div> <br>
+
+    <!-- Button to Coaches Page -->
+    <div class="text-center mt-4">
+      <a href="/coaches" class="btn btn-danger btn-lg px-5 py-3">
+        Know More
+      </a>
+    </div>
+  </div>
+</section> 
+
+{% endblock 'main' %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block 'main' %}
+<div class="container mt-5">
+
+    <!-- Header with filter dropdown -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="mb-0">Events</h2>
+
+        <form method="get" action="">
+            <label for="filter-select" class="visually-hidden">Filter events</label>
+            <select id="filter-select" name="filter" class="form-select" style="display:inline-block; width:auto;"
+                    onchange="this.form.submit()">
+                <option value="upcoming" {% if filter_type == "upcoming" %}selected{% endif %}>Upcoming</option>
+                <option value="past" {% if filter_type == "past" %}selected{% endif %}>Past</option>
+            </select>
+            <noscript>
+                <button type="submit" class="btn btn-sm btn-primary ms-2">Show</button>
+            </noscript>
+        </form>
+    </div>
+
+    <div class="row">
+        {% for event in events %}
+            <div class="col-md-4 d-flex">  
+
+                <div class="card flex-fill d-flex flex-column mb-4">  
+
+                    {% if event.cover_image %}
+                        <img src="{{ event.cover_image.url }}" class="card-img-top" alt="{{ event.title }}" height="350px">
+                    {% endif %}
+
+                    <div class="card-body d-flex flex-column">  
+                        <h5 class="card-title">{{ event.title }}</h5>
+                        <p class="card-text">{{ event.description|truncatewords:20 }}</p>
+                        <p><strong>Date:</strong> {{ event.date }}</p>
+                        <p><strong>Location:</strong> {{ event.location }}</p>
+
+                        <a href="{% url 'event_detail' event.id %}" class="btn btn-primary mt-auto">View Details</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p>No events available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock 'main' %}

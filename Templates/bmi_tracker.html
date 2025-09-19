@@ -1,0 +1,266 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BMI Calculator - Alpha Run Club</title>
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<style>
+  body {
+    font-family: 'Poppins', sans-serif;
+    background: #f8f9fa;
+    margin: 0;
+    padding: 0;
+  }
+  header {
+    background: #111;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  header h1 {
+    font-weight: 700;
+    margin: 0;
+    font-size: 1.6rem;
+  }
+  .back-container {
+    padding: 15px 20px;
+    text-align: left;
+  }
+  .back-btn {
+    background: #ff4d4d;
+    border: none;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .back-btn i {
+    margin-right: 5px;
+  }
+  .back-btn:hover {
+    opacity: 0.85;
+  }
+  .container {
+    min-height: calc(100vh - 140px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .bmi-card {
+    background: #fff;
+    border-radius: 15px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    padding: 30px;
+    max-width: 700px;
+    width: 100%;
+  }
+  .bmi-card h2 {
+    text-align: center;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #333;
+  }
+  .step {
+    text-align: center;
+    background: #fff;
+    border: 1px solid #e0e0e0;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+  .step h5 {
+    font-size: 1rem;
+    margin-bottom: 15px;
+    color: #333;
+  }
+  .gender-select button {
+    border: 2px solid #ddd;
+    background: #fff;
+    padding: 15px 25px;
+    border-radius: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    margin: 5px;
+    transition: 0.2s;
+  }
+  .gender-select button.active,
+  .gender-select button:hover {
+    border-color: #ff4d4d;
+    background: #fff0f0;
+    color: #ff4d4d;
+  }
+  .form-control {
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .calculate-btn {
+    background: linear-gradient(90deg, #ff4d4d, #ff7a7a);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 1rem;
+    margin-top: 15px;
+    transition: 0.2s;
+  }
+  .calculate-btn:hover {
+    opacity: 0.9;
+  }
+  .result {
+    margin-top: 20px;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    font-weight: 600;
+  }
+  .category-underweight { background-color: #cce5ff; color: #004085; }
+  .category-normal { background-color: #d4edda; color: #155724; }
+  .category-overweight { background-color: #fff3cd; color: #856404; }
+  .category-obese { background-color: #f8d7da; color: #721c24; }
+  footer {
+    text-align: center;
+    padding: 15px;
+    background: #111;
+    color: #fff;
+    font-size: 0.9rem;
+    margin-top: 20px;
+    border-radius: 0 0 15px 15px;
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<header>
+  <h1>Alpha Run Club | Health Tools</h1>
+</header>
+
+<!-- Back button below header -->
+<div class="back-container">
+  <a href="/home">
+    <button class="back-btn"><i class="bi bi-arrow-left"></i> Back to Home</button>
+  </a>
+</div>
+
+<!-- BMI Calculator -->
+<div class="container">
+  <div class="bmi-card">
+    <h2>Body Mass Index (BMI) Calculator</h2>
+    <form id="bmi-form">
+
+      <!-- Step 1 -->
+      <div class="step">
+        <h5>1. What is your sex?</h5>
+        <div class="gender-select">
+          <button type="button" id="male-btn">👨 Male</button>
+          <button type="button" id="female-btn">👩 Female</button>
+          <input type="hidden" id="gender" required>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <h5>2. How old are you?</h5>
+        <input type="number" class="form-control" id="age" placeholder="Enter your age" required>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="step">
+        <h5>3. How tall are you?</h5>
+        <div class="row">
+          <div class="col">
+            <input type="number" class="form-control" id="height-ft" placeholder="ft" required>
+          </div>
+          <div class="col">
+            <input type="number" class="form-control" id="height-in" placeholder="in">
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 -->
+      <div class="step">
+        <h5>4. How much do you weigh?</h5>
+        <input type="number" class="form-control" id="weight" placeholder="Enter weight in kg" required>
+      </div>
+
+      <button type="submit" class="calculate-btn">Calculate your BMI</button>
+    </form>
+
+    <div class="result" id="result"></div>
+  </div>
+</div>
+
+<footer>
+  &copy; 2025 Alpha Run Club
+</footer>
+
+<script>
+  // gender select toggle
+  const maleBtn = document.getElementById('male-btn');
+  const femaleBtn = document.getElementById('female-btn');
+  const genderInput = document.getElementById('gender');
+
+  maleBtn.addEventListener('click', () => {
+    genderInput.value = "male";
+    maleBtn.classList.add('active');
+    femaleBtn.classList.remove('active');
+  });
+  femaleBtn.addEventListener('click', () => {
+    genderInput.value = "female";
+    femaleBtn.classList.add('active');
+    maleBtn.classList.remove('active');
+  });
+
+  // BMI calculation
+  document.getElementById('bmi-form').addEventListener('submit', function(e){
+    e.preventDefault();
+    const gender = genderInput.value;
+    const age = parseInt(document.getElementById('age').value);
+    const heightFt = parseFloat(document.getElementById('height-ft').value) || 0;
+    const heightIn = parseFloat(document.getElementById('height-in').value) || 0;
+    const weight = parseFloat(document.getElementById('weight').value);
+
+    if(!gender || !age || (!heightFt && !heightIn) || !weight){
+      alert("Please fill all fields.");
+      return;
+    }
+
+    const totalInches = (heightFt * 12) + heightIn;
+    const heightM = totalInches * 0.0254;
+    const bmi = weight / (heightM*heightM);
+    let category = "", cssClass="";
+
+    if(bmi < 18.5){
+      category = "Underweight"; cssClass="category-underweight";
+    } else if(bmi < 24.9){
+      category = "Normal weight"; cssClass="category-normal";
+    } else if(bmi < 29.9){
+      category = "Overweight"; cssClass="category-overweight";
+    } else {
+      category = "Obese"; cssClass="category-obese";
+    }
+
+    const minIdeal = (18.5 * heightM * heightM).toFixed(1);
+    const maxIdeal = (24.9 * heightM * heightM).toFixed(1);
+
+    const resultDiv = document.getElementById('result');
+    resultDiv.className = `result ${cssClass}`;
+    resultDiv.innerHTML = `
+      <p><strong>BMI:</strong> ${bmi.toFixed(1)}</p>
+      <p><strong>Category:</strong> ${category}</p>
+      <p><strong>Ideal Weight:</strong> ${minIdeal} - ${maxIdeal} kg</p>
+    `;
+  });
+</script>
+</body>
+</html>

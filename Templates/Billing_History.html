@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+{% block 'main' %}
+
+<div class="container py-5">
+  <!-- Billing History Heading -->
+  <h2 class="fw-bold mb-4 text-center text-dark">Billing History</h2>
+
+  <!-- Filters -->
+<div class="container-fluid mb-4">
+  <form method="GET" class="row g-2 align-items-center">
+    <div class="col-md-4">
+      <input type="text" name="search" class="form-control" placeholder="Search by title or plan..." value="{{ request.GET.search }}">
+    </div>
+    <div class="col-md-3">
+      <select name="type" class="form-select">
+        <option value="All" {% if request.GET.type == "All" %}selected{% endif %}>All Types</option>
+        <option value="Event" {% if request.GET.type == "Event" %}selected{% endif %}>Event</option>
+        <option value="Plan" {% if request.GET.type == "Plan" %}selected{% endif %}>Plan</option>
+      </select>
+    </div>
+    <div class="col-md-2">
+      <button type="submit" class="btn btn-primary w-100">Filter</button>
+    </div>
+  </form>
+</div>
+
+  <!-- Billing Table Section -->
+  <div class="section-pop p-4 bg-white shadow-sm rounded">
+    <div class="table-responsive">
+      <table class="table align-middle mb-0">
+        <colgroup>
+          <col style="width: 10%">
+          <col style="width: 35%">
+          <col style="width: 8%">
+          <col style="width: 10%">
+          <col style="width: 10%">
+          <col style="width: 10%">
+          <col style="width: 12%">
+          <col style="width: 5%">
+        </colgroup>
+        <thead class="bg-danger text-white">
+          <tr>
+            <th>Type</th>
+            <th>Title / Details</th>
+            <th class="text-center">Quantity</th>
+            <th>Amount/Ticket</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th class="text-center">Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for payment in payments %}
+          <tr>
+            <td>
+              {% if payment.event %}Event
+              {% elif payment.plan_type %}Plan
+              {% else %}N/A{% endif %}
+            </td>
+            <td>
+              {% if payment.event %}
+                <div class="fw-bold">{{ payment.event.title }}</div>
+                <small class="text-muted">{{ payment.event.event_type|title }} • {{ payment.event.date|date:"d M Y" }}</small>
+              {% elif payment.plan_type %}
+                <div class="fw-bold">{{ payment.plan_type|title }} Plan</div>
+                <small class="text-muted">Alpha Performance Division</small>
+              {% else %}
+                N/A
+              {% endif %}
+            </td>
+            <td class="text-center">{% if payment.quantity %}{{ payment.quantity }}{% elif payment.plan_type %}1{% else %}-{% endif %}</td>
+            <td>{% if payment.amount %}₹{{ payment.amount|floatformat:2 }}{% else %}-{% endif %}</td>
+            <td>{% if payment.total_amount %}₹{{ payment.total_amount|floatformat:2 }}{% elif payment.amount %}₹{{ payment.amount|floatformat:2 }}{% else %}-{% endif %}</td>
+            <td>
+              {% if payment.status == "SUCCESS" %}
+                <span class="badge bg-success d-block">Success</span>
+              {% elif payment.status == "PENDING" %}
+                <span class="badge bg-warning text-dark">Pending</span>
+              {% else %}
+                <span class="badge bg-danger">Failed</span>
+              {% endif %}
+            </td>
+            <td>{{ payment.created_at|date:"d M Y, H:i" }}</td>
+            <td class="text-center">
+              {% if payment.status == "SUCCESS" %}
+                {% if payment.event %}
+                  <a href="{% url 'download_receipt' payment.id %}" class="text-success"><i class="bi bi-download" style="font-size:1.2rem;"></i></a>
+                {% elif payment.plan_type %}
+                  <a href="{% url 'download_plan_receipt' payment.id %}" class="text-success"><i class="bi bi-download" style="font-size:1.2rem;"></i></a>
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="8" class="text-center py-4 text-muted">No payments found.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Action Buttons -->
+  <div class="my-5 d-flex justify-content-center gap-3 flex-wrap">
+    <a href="/events" class="btn btn-danger btn-lg">← Back to Events</a>
+    <a href="/home" class="btn btn-outline-secondary btn-lg">🏠 Go Back Home</a>
+  </div>
+</div>
+
+{% endblock 'main' %}
+
+

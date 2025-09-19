@@ -1,0 +1,98 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us</title>
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %} ">
+        <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .contact-container {
+            max-width: 700px;
+            margin: 50px auto;
+        }
+        .card {
+            border-radius: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .btn-runclub {
+            background-color: #dc3545;
+            color: #fff;
+        }
+        .btn-runclub:hover {
+            background-color: #b02a37;
+        }
+        .form-title {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-danger" href="#">Alpha Run Club</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/home">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Events</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Members</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#">Blog</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/contact">Contact Us</a></li>
+                    <li class="nav-item"><a class="btn btn-danger ms-2" href="/register">Join Now</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Section -->
+    <div class="container contact-container">
+        <div class="card p-4">
+            <h2 class="text-center mb-4 text-uppercase text-danger"><b>Contact Us!</b></h2>
+            <form method="post">
+                {% csrf_token %}
+                <!-- Name -->
+                <div class="mb-3">
+                    <label for="contactName" class="form-label">Your Name</label>
+                    <input type="text" name="cname" class="form-control" id="contactName" placeholder="Enter your name" required>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="contactEmail" class="form-label">Email Address</label>
+                    <input type="email" name="cmail" class="form-control" id="contactEmail" placeholder="you@example.com" required>
+                </div>
+
+                <!-- Mobile -->
+                <div class="mb-3">
+                    <label for="Mobile" class="form-label">Mobile Number</label>
+                    <input type="text" name="cmob" class="form-control" id="Mobile" placeholder="00000 00000" required>
+                </div>
+
+                <!-- Message --> 
+                <div class="mb-3">
+                    <label for="contactMessage" class="form-label">Your Message</label>
+                    <textarea name="cmsg" class="form-control" id="contactMessage" rows="5" placeholder="Type your message here..." required></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-runclub w-100">Send Message</button>
+            </form>
+        </div>
+    </div>
+
+          
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'js/popper.js' %}"></script>
+</body>
+</html>

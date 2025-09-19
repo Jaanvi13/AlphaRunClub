@@ -1,0 +1,142 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Admin | Dashboard</title>
+  <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body { background-color: #f8f9fa; }
+    .card-summary { padding: 20px; border-radius: 12px; box-shadow: 0 3px 10px rgba(0,0,0,0.1); }
+    .card-summary h6 { font-weight: 600; margin-bottom: 10px; }
+    .card-summary h3 { font-weight: bold; }
+    .revenue-card { background-color: #e63946; color: white; }
+    canvas { min-height: 250px; 
+    .hover-bg:hover {
+    background-color: #e63946;
+    color: white !important;
+    transition: 0.3s;
+    }
+    nav h4 {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }}
+  </style>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+
+    <!-- Sidebar -->
+    <nav class="col-md-2 p-3 vh-100" style="background: linear-gradient(180deg, #1d1f20, #2c2f33); box-shadow: 2px 0 8px rgba(0,0,0,0.2);">
+    <!-- Logo + Text -->
+    <div class="d-flex align-items-center justify-content-center mb-5" style="margin-top: 20px;">
+      <img src="/media/image/Logo.png" alt="Alpha Logo" style="width:35px; height:55px; object-fit:contain; margin-right:10px;">
+      <h4 class="text-white mb-0" style="font-weight:700; letter-spacing:1px;">Alpha Admin</h4>
+    </div>
+
+    <div class="nav flex-column">
+      <a href="/admin" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">📊 Dashboard</a>
+      <a href="/admin/usermanage" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">👥 Users</a>
+      <a href="/admin/eventlist" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">📅 Events</a>
+      <a href="/admin/event-payments" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">💳 Event Payments</a>
+      <a href="/admin/plan-payments" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">💪 Plan Payments</a>
+      <a href="/home" class="text-white d-block py-2 px-3 mb-2 rounded hover-bg" style="text-decoration:none; font-weight:500;">🏠 Home</a>
+    </div>
+  </nav>
+
+    <!-- Main -->
+    <main class="col-md-10 p-4" style="margin-top: 25px;">
+      <h2 class="mb-4">Dashboard Overview</h2> <br>
+
+      <!-- Summary Cards -->
+      <div class="row mb-4 text-center">
+        <div class="col-md-2 mb-3">
+          <div class="card-summary bg-white shadow">
+            <h6>Total Users</h6>
+            <h3>{{ total_users }}</h3>
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="card-summary bg-white shadow">
+            <h6>Total Events</h6>
+            <h3>{{ total_events }}</h3>
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="card-summary bg-white shadow">
+            <h6>Event Payments</h6>
+            <h3>{{ total_event_payments }}</h3>
+          </div>
+        </div>
+        <div class="col-md-2 mb-3">
+          <div class="card-summary bg-white shadow">
+            <h6>Plan Payments</h6>
+            <h3>{{ total_plan_payments }}</h3>
+          </div>
+        </div>
+        <div class="col-md-4 mb-3">
+          <div class="card-summary revenue-card shadow">
+            <h6>Total Revenue (₹)</h6>
+            <h3>₹{{ total_revenue }}</h3>
+          </div>
+        </div>
+      </div> <br>
+
+      <!-- Charts -->
+      <div class="row">
+        <div class="col-md-6 mb-4">
+          <div class="card p-3 shadow" style="height: 450px;">
+            <h5>Event Payments by Status</h5>
+            <canvas id="eventPaymentsChart" style="height:250px;"></canvas>
+          </div>
+        </div>
+        <div class="col-md-6 mb-4">
+          <div class="card p-3 shadow" style="height: 450px;">
+            <h5>Plan Payments by Status</h5>
+            <canvas id="planPaymentsChart" style="height:250px;"></canvas>
+          </div>
+        </div>
+      </div>
+
+
+<!-- Embed JSON data safely as numbers -->
+<script>
+  const eventData = {{ payment_status_data|safe }};
+  const planData = {{ plan_status_data|safe }};
+
+  function getCount(data, status) {
+    const item = data.find(e => e.status === status);
+    return item ? parseInt(item.count) : 0;
+  }
+
+  // Event Payments Chart
+  new Chart(document.getElementById('eventPaymentsChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels: ['SUCCESS','PENDING','FAILED'],
+      datasets: [{
+        data: ['SUCCESS','PENDING','FAILED'].map(s => getCount(eventData, s)),
+        backgroundColor: ['#28a745','#ffc107','#dc3545']
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+
+  // Plan Payments Chart
+  new Chart(document.getElementById('planPaymentsChart').getContext('2d'), {
+    type: 'pie',
+    data: {
+      labels: ['SUCCESS','PENDING','FAILED'],
+      datasets: [{
+        data: ['SUCCESS','PENDING','FAILED'].map(s => getCount(planData, s)),
+        backgroundColor: ['#28a745','#ffc107','#dc3545']
+      }]
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+</script>
+
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+</body>
+</html>
